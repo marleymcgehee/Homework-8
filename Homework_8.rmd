@@ -2,14 +2,77 @@
 title: "Homework 8"
 author: "Marley McGehee"
 date: "3/26/2026"
-output: html_document
+output:  
+  html_document:
+    code_folding: hide
+
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, include = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyr)
-library(ggplot2)
+library(Lock5Data)
 library(tidyverse)
+
+
 ```
 
+### BMI Calculation
+
+```{r}
+BMI_Student_Survey <- StudentSurvey %>%
+  mutate(BMI = round((701 * Weight/(Height**2)), 1))
+         
+knitr::kable(BMI_Student_Survey %>%      
+             head(n = 6))
+```
+^[Question 1 complete]
+
+```{r}
+BMI_Categorized_Student_Survey <- BMI_Student_Survey %>%
+  mutate(BMI_range = cut(BMI, c(-Inf, 18.5, 24.9, 29.9, Inf), 
+                         c("Underweight", "Healthy Weight", "Overweight", "Obese")))
+  
+  
+knitr::kable(BMI_Categorized_Student_Survey %>%
+            head(n = 6))
+
+```
+
+^[Question 2 complete]
+
+```{r}
+knitr::kable(BMI_Categorized_Student_Survey %>%
+  group_by(Sex) %>%
+  summarize(
+    lowest_BMI = min(BMI, na.rm = TRUE),
+    highest_BMI = max(BMI, na.rm = TRUE)
+  ))
+```
+
+^[Question 3 complete]
+
+### SAT Scores
+
+```{r}
+knitr::kable(StudentSurvey %>%
+  mutate(
+    greater_SAT = pmax(VerbalSAT, MathSAT, na.rm = TRUE)
+  ) %>%
+    select(VerbalSAT, MathSAT, greater_SAT) %>%
+    head(n = 6))
+
+```
+
+
+^[Question 4 complete]
+
+```{r}
+knitr::kable(StudentSurvey %>%
+               mutate(z_score = (SAT - mean(SAT)) / sd(SAT)) %>%
+               select(SAT, z_score) %>%
+               head(n = 6))
+```
+
+^[Question 5 Complete]
